@@ -3,12 +3,6 @@
   "version": "1.0.0",
   "description": "NoSQL Challenge: Social Network API",
   "main": "server.js",
-  "dependencies": {
-    "express": "^4.17.1",
-    "moment": "^2.29.1",
-    "mongoose": "^5.13.7"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -23,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/timanlemvo/social-media-api/issues"
   },
-  "homepage": "https://github.com/timanlemvo/social-media-api#readme"
+  "homepage": "https://github.com/timanlemvo/social-media-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "mongoose": "^5.13.7"
+  }
 }
