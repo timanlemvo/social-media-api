@@ -5,8 +5,8 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
-    "mongoose": "^5.13.7",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1",
+    "mongoose": "^5.13.7"
   },
   "devDependencies": {},
   "scripts": {

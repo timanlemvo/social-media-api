@@ -1,7 +1,8 @@
-const { User } = require('../models');
+const { User, Thought } = require('../models');
 
 const userController = {
 
+    // GET /api/users
     getAllUsers(req, res) {
         User.find({})
         .select('-__v')
@@ -12,6 +13,7 @@ const userController = {
         })
     },
 
+    // GET /api/users/:id
     getUserById({ params }, res) {
         User.findOne({ _id: params.id })
         .populate([
@@ -52,13 +54,27 @@ const userController = {
 
     // DELETE /api/users/:id
     deleteUser({ params }, res) {
+        // delete the user
         User.findOneAndDelete({ _id: params.id })
         .then(dbUserData => {
             if (!dbUserData) {
                 res.status(404).json({ message: 'No user found with this id'});
                 return;
             }
-            res.json({message: 'Successfully deleted the user'});
+            // remove the user from any friends arrays
+            User.updateMany(
+                { _id : {$in: dbUserData.friends } },
+                { $pull: { friends: params.id } }
+            )
+            .then(() => {
+                // remove any comments from this user
+                Thought.deleteMany({ username : dbUserData.username })
+                .then(() => {
+                    res.json({message: "Successfully deleted user"});
+                })
+                .catch(err => res.status(400).json(err));
+            })
+            .catch(err => res.status(400).json(err));
         })
         .catch(err => res.status(400).json(err));
     },
@@ -68,7 +84,7 @@ const userController = {
         // add friendId to userId's friend list
         User.findOneAndUpdate(
             { _id: params.userId },
-            { $push: { friends: params.friendId } },
+            { $addToSet: { friends: params.friendId } },
             { new: true, runValidators: true }
         )
         .then(dbUserData => {
@@ -79,7 +95,7 @@ const userController = {
             // add userId to friendId's friend list
             User.findOneAndUpdate(
                 { _id: params.friendId },
-                { $push: { friends: params.userId } },
+                { $addToSet: { friends: params.userId } },
                 { new: true, runValidators: true }
             )
             .then(dbUserData2 => {
